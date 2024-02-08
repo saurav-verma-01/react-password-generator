@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const App = () => {
   const [password, setPassword] = useState("Whatever");
   const [length, setLength] = useState(12);
   const [includeNum, setIncludeNum] = useState(false);
   const [includeChar, setIncludeChar] = useState(false);
+
+  const passwordRef = useRef(null);
 
   const generatePassword = useCallback(() => {
     let pass = "";
@@ -19,6 +21,11 @@ const App = () => {
 
     setPassword(pass);
   }, [length, includeNum, includeChar, setPassword]);
+
+  const copyPasswordToClipboard = useCallback(() => {
+    passwordRef.current.select();
+    window.navigator.clipboard.writeText(password);
+  }, [password]);
 
   useEffect(() => {
     generatePassword();
@@ -36,9 +43,13 @@ const App = () => {
             className="w-full max-w-xl py-4 px-2 mr-2 rounded border-none outline-none text-orange-500 text-3xl"
             readOnly
             value={password}
+            ref={passwordRef}
           />
-          <button className="bg-blue-800 max-w-28 w-full rounded hover:bg-blue-500 cursor-pointer duration-300  hover:border-y-2 hover:border-cyan-200">
-            Copy
+          <button
+            onClick={copyPasswordToClipboard}
+            className="bg-blue-800 max-w-28 w-full rounded hover:bg-blue-500 cursor-pointer duration-300  hover:border-y-2 hover:border-cyan-200"
+          >
+            Copy to Clipboeard
           </button>
         </div>
         <div className="flex justify-between pt-3 pb-2">
